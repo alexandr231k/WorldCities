@@ -1,0 +1,78 @@
+<div class="city-edit">
+  <h1>{{title}}</h1>
+  <p *ngIf="this.id && !city"><em>Loading...</em></p>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <p>
+      <mat-error *ngIf="form.invalid && form.hasError('isDupeCity')">
+        <strong>ERROR</strong>
+        A city with the same <i>name</i>, <i>lat</i>,
+        <i>lon</i> and <i>country</i> already exists.
+      </mat-error>
+    </p>
+
+    <!-- Name -->
+    <mat-form-field>
+      <mat-label>Name:</mat-label>
+      <input matInput formControlName="name" required
+             placeholder="Type a name" />
+    </mat-form-field>
+
+    <mat-error *ngFor="let error of getErrors(form.get('name')!,
+               'Name')">
+      {{error}}
+    </mat-error>
+
+    <!-- Lat -->
+    <mat-form-field>
+      <mat-label>Lat:</mat-label>
+      <input matInput formControlName="lat" required
+             placeholder="Insert a latitude" />
+    </mat-form-field>
+
+    <mat-error *ngFor="let error of getErrors(form.get('lat')!,
+               'Latitude',
+               {'pattern' : 'requires a positive or negative number with 0-4 decimal values'})">
+      {{error}}
+    </mat-error>
+
+    <!-- Lon -->
+    <mat-form-field>
+      <mat-label>Lon:</mat-label>
+      <input matInput formControlName="lon" required
+             placeholder="Insert longitude" />
+    </mat-form-field>
+
+    <mat-error *ngFor="let error of getErrors(form.get('lon')!,
+               'Longitude',
+               {'pattern': 'requires a positive or negative number with 0-4 decimal values'})">
+      {{error}}
+    </mat-error>
+
+    <!-- Country -->
+    <mat-form-field *ngIf="countries">
+      <mat-label>Select a Country...</mat-label>
+      <mat-select id="countryId" formControlName="countryId">
+        <mat-option *ngFor="let country of countries"
+                    [value]="country.id">
+          {{country.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-error *ngIf="this.form.controls['countryId'].errors?.['required']">
+      Pleaae select a Country.
+    </mat-error>
+
+    <div>
+      <button mat-flat-button color="primary"
+              type="submit">
+        {{ this.id ? "Save" : "Create"}}
+      </button>
+      <button mat-flat-button color="secondary"
+              [routerLink]="['/cities']">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
